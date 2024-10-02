@@ -5,12 +5,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.util.Timer;
+import java.util.TimerTask;
 
 import java.util.Random;
 
 public class CCOMP_Aula01 
 {
-    
+    static int mana = 50;
+    static long lastUpdate;
     
     
     public static void SwingScreen()
@@ -19,16 +22,64 @@ public class CCOMP_Aula01
         JFrame frame = new JFrame("My GUI");
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 200); // Set the size of the frame
+        frame.setSize(300, 500); // Set the size of the frame
         //frame.setBackground(Color.BLACK);
-
+        
         // Create a new JPanel
-        JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout()); // Set the layout manager
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new FlowLayout()); // Set the layout manager
+        
+        // Crie as barras de vida e mana
+        JProgressBar hpBar = new JProgressBar(0, 100);
+        hpBar.setForeground(Color.RED);
+        hpBar.setPreferredSize(new Dimension(200, 20));
+
+        JProgressBar manaBar = new JProgressBar(0, 100);
+        manaBar.setForeground(Color.BLUE);
+        manaBar.setPreferredSize(new Dimension(200, 20));
+        manaBar.setValue(mana);
+
+        // Adicione as barras de vida e mana ao JPanel
+        topPanel.add(hpBar);
+        topPanel.add(manaBar);
+        
+        // Create a attackPanel for the top line
+        JPanel hpPanel = new JPanel();
+        hpPanel.setLayout(new FlowLayout());
+        
+        JLabel lifeLabel = new JLabel("Life: 100/100");
+        JLabel manaLabel = new JLabel("Mana: 50/50");
+
+        hpPanel.add(lifeLabel);
+        hpPanel.add(manaLabel);
+        
+        // Create a attackPanel for the bottom line
+        JPanel potPanel = new JPanel();
+        potPanel.setLayout(new FlowLayout());
+
+        // Create labels for HP and mana potions
+        JLabel hpPotionsLabel = new JLabel("HP Potions: 5");
+        JLabel manaPotionsLabel = new JLabel("Mana Potions: 3");
+
+        potPanel.add(hpPotionsLabel);
+        potPanel.add(manaPotionsLabel);
+
+        
+        
+        // Create a new JPanel
+        JPanel attackPanel = new JPanel();
+        attackPanel.setLayout(new FlowLayout()); // Set the layout manager
+        
+        // Create a new JPanel
+        JPanel magicPanel = new JPanel();
+        attackPanel.setLayout(new FlowLayout()); // Set the layout manager
+        
+        // Create a new JPanel
+        JPanel usePotPanel = new JPanel();
+        attackPanel.setLayout(new FlowLayout()); // Set the layout manager
 
         // Create a text field
         //JTextField textField = new JTextField(20); // 20 columns wide
-        JLabel lblHP = new JLabel("100");
 
         // Create a button
         JButton btnAttack = new JButton("Attack");
@@ -51,20 +102,29 @@ public class CCOMP_Aula01
         btnManaPotion.setBackground(Color.BLUE);
         btnManaPotion.setPreferredSize(new Dimension(100, 30));
 
-        // Add the components to the panel
+        // Add the components to the attackPanel
         //panel.add(textField);
-        panel.add(lblHP);
-        panel.add(btnAttack);
-        panel.add(btnDefend);
-        panel.add(btnMagic);
-        panel.add(btnHeal);
-        panel.add(btnHealPotion);
-        panel.add(btnManaPotion);
+        attackPanel.add(btnAttack);
+        attackPanel.add(btnDefend);
+        magicPanel.add(btnMagic);
+        magicPanel.add(btnHeal);
+        usePotPanel.add(btnHealPotion);
+        usePotPanel.add(btnManaPotion);
 
-        // Add the panel to the frame
-        frame.getContentPane().add(panel);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+
+        mainPanel.add(topPanel);
+        mainPanel.add(hpPanel);
+        mainPanel.add(potPanel);
+        mainPanel.add(attackPanel);
+        mainPanel.add(magicPanel);
+        mainPanel.add(usePotPanel);
+            
+        frame.getContentPane().add(mainPanel);
 
         // Make the frame visible
+        frame.pack();
         frame.setVisible(true);
         
         btnAttack.addActionListener(new ActionListener() {
@@ -74,6 +134,21 @@ public class CCOMP_Aula01
             System.out.println("Attack!!");
             }
         });
+        
+        btnMagic.addActionListener(new ActionListener() {
+        @Override
+            public void actionPerformed(ActionEvent e) {
+            // Code to be executed when the button is clicked
+                mana -= 10;
+                manaBar.setValue(mana);
+            }
+        });
+        
+    }
+    
+    private static void updateGame(long deltaTime) {
+        mana += 1;
+        System.out.println(deltaTime);
     }
     
     public static void main(String[] args) 
@@ -90,6 +165,20 @@ public class CCOMP_Aula01
         Scanner scan = new Scanner(System.in);
 
         SwingScreen();
+        
+        lastUpdate = System.currentTimeMillis();
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                long currentUpdate = System.currentTimeMillis();
+                long deltaTime = currentUpdate - lastUpdate;
+                lastUpdate = currentUpdate;
+                updateGame(deltaTime);
+            }
+        }, 0, 1000); // Executa a cada 1 segundo
+        
+        
         
         /*
         crie uma CLASSE que peça ao usuário três números:
