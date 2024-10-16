@@ -14,6 +14,8 @@ public class CCOMP_Aula01
 {
     static int mana = 50;
     static long lastUpdate;
+    static JProgressBar manaBar;
+    static JLabel manaLabel;
     
     
     public static void SwingScreen()
@@ -34,7 +36,7 @@ public class CCOMP_Aula01
         hpBar.setForeground(Color.RED);
         hpBar.setPreferredSize(new Dimension(200, 20));
 
-        JProgressBar manaBar = new JProgressBar(0, 100);
+        manaBar = new JProgressBar(0, 100);
         manaBar.setForeground(Color.BLUE);
         manaBar.setPreferredSize(new Dimension(200, 20));
         manaBar.setValue(mana);
@@ -48,7 +50,7 @@ public class CCOMP_Aula01
         hpPanel.setLayout(new FlowLayout());
         
         JLabel lifeLabel = new JLabel("Life: 100/100");
-        JLabel manaLabel = new JLabel("Mana: 50/50");
+        manaLabel = new JLabel("Mana: 50/50");
 
         hpPanel.add(lifeLabel);
         hpPanel.add(manaLabel);
@@ -140,7 +142,8 @@ public class CCOMP_Aula01
             public void actionPerformed(ActionEvent e) {
             // Code to be executed when the button is clicked
                 mana -= 10;
-                manaBar.setValue(mana);
+                manaBar.setValue(2*mana);
+                manaLabel.setText("Mana: " + mana + "/50");
             }
         });
         
@@ -148,6 +151,8 @@ public class CCOMP_Aula01
     
     private static void updateGame(long deltaTime) {
         mana += 1;
+        manaBar.setValue(2*mana);
+        manaLabel.setText("Mana: " + mana + "/50");
         System.out.println(deltaTime);
     }
     
